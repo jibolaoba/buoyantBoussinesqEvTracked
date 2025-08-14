@@ -70,9 +70,6 @@ If compilation fails, ensure your OpenFOAM environment is correctly set up and c
     - `constant/`: Physical properties, transport models.
     - `system/`: Control dictionaries (controlDict, fvSchemes, fvSolution).
 - **`libs/`**: Custom libraries for models (e.g., evaporation models, buoyancy terms).
-- **`doc/`**: Documentation files (if any additional PDFs or notes).
-- **`README.md`**: This file.
-- **`.gitignore`**: Standard ignores for temporary files.
 
 ## Usage
 
