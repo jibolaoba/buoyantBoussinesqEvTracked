@@ -4,9 +4,8 @@
 
 This repository contains a custom CFD (Computational Fluid Dynamics) solver based on the OpenFOAM framework, specifically designed for simulating buoyancy-driven flows using the Boussinesq approximation with evaporation tracking. The solver, named `buoyantBoussinesqEvTracked`, extends standard OpenFOAM solvers to incorporate phase change phenomena, such as evaporation at fluid interfaces, while accounting for buoyancy effects in incompressible flows. It is particularly useful for applications involving natural convection, heat transfer, and multiphase flows with evaporation, such as in environmental engineering, HVAC systems, or industrial processes like boiling and condensation.
 
-The solver integrates the Boussinesq approximation for buoyancy (treating density variations as linear with temperature in the momentum equation) and includes evaporation modeling, potentially using Volume of Fluid (VOF) or similar interface tracking methods to handle the liquid-vapor interface and mass transfer due to evaporation.
-
-This project is built on OpenFOAM (Open Field Operation and Manipulation), an open-source CFD toolbox. It assumes familiarity with OpenFOAM's structure and commands.
+The solver integrates the Boussinesq approximation for buoyancy (treating density variations as linear with temperature in the momentum equation) and implements a simplified evaporation modeling, that bypass chemical composition effects at the liquid–vapor interface and during evaporation-driven mass transfer.
+This project is built on OpenFOAM (Open Field Operation and Manipulation), an open-source CFD toolbox.
 
 ## Features
 
