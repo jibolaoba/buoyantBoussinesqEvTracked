@@ -87,7 +87,7 @@ If compilation fails, ensure your OpenFOAM environment is correctly set up and c
    - Edit `system/controlDict` for run time, write intervals, etc.
    - Define boundary conditions in `0/` directory.
    - Specify models in `constant/transportProperties` (e.g., Prandtl number, beta for Boussinesq).
-   - For evaporation, set parameters like saturation temperature or mass transfer coefficients.
+   - For evaporation based on relative humidity, set parameters like Specific heat capacity, beta, Thermal expansion coefficient, Evaporation coefficient and mass transfer coefficients.
 
 3. **Mesh the Domain**:
    - Run `blockMesh` or use snappyHexMesh for complex geometries.
@@ -96,7 +96,7 @@ If compilation fails, ensure your OpenFOAM environment is correctly set up and c
    ```
    buoyantBoussinesqEvTracked
    ```
-   - For parallel run: `decomposePar`, then `mpirun -np 4 buoyantBoussinesqEvTracked -parallel`, followed by `reconstructPar`.
+   - For parallel run: `decomposePar`, then `mpirun -np * buoyantBoussinesqEvTracked -parallel` (where * represents the number of multiple sub-domains for parallel execution across processors), followed by `reconstructPar`.
 
 5. **Post-Process**:
    - Use `paraFoam` to visualize in ParaView.
@@ -110,18 +110,11 @@ If compilation fails, ensure your OpenFOAM environment is correctly set up and c
   - `constant/evaporationProperties`: Evaporation model parameters (e.g., heat of vaporization).
 - **Run**: Execute the solver and monitor residuals in the log file.
 
-## Customization
-
-- **Adding New Models**: Extend classes in `libs/` (e.g., inherit from `evaporationModel`).
-- **Turbulence**: Modify `constant/turbulenceProperties` to switch models.
-- **Boundary Conditions**: Use OpenFOAM's patch types for walls, inlets, etc.
-
 ## Troubleshooting
 
 - **Compilation Errors**: Check OpenFOAM version compatibility. Clean with `wclean` and retry.
 - **Runtime Issues**: Ensure mesh quality (`checkMesh`). Adjust solver tolerances in `system/fvSolution`.
-- **Evaporation Not Triggering**: Verify temperature fields exceed saturation point.
-- For more help, refer to OpenFOAM forums or documentation.
+- **Evaporation Not Triggering**: Verify parameters such as relative humidity, set parameters like Specific heat capacity, beta, Thermal expansion coefficient, Evaporation coefficient and mass transfer coefficients matches experimentally proven results.
 
 ## Contributing
 
@@ -134,6 +127,6 @@ This project is licensed under the GNU General Public License v3 (GPLv3). See th
 ## Acknowledgments
 
 - Built upon the OpenFOAM foundation.
-- Inspired by standard solvers like `buoyantBoussinesqSimpleFoam` and multiphase extensions like `interFoam`.
+- Inspired by standard solvers like `buoyantBoussinesqPimpleFoam` and multiphase extensions like `interFoam`.
 
 For questions, contact the repository owner or open an issue.
