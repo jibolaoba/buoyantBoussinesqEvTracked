@@ -31,9 +31,10 @@ Group
     grpHeatTransferSolvers
 
 Description
-    Transient solver modified by Jibola Obafemi Owolabi for buoyant turbulent flow with simplified solvent-solute model for RH-driven
-	evaporation of aerosol particles in incompressible framework, with optional mesh motion and topology changes.
-	Tracks droplet diameter reduction as it evolves from initial diameter to equilibrium diameter based on ambient RH.
+    Transient solver modified by Jibola Owolabi for buoyant turbulent flow with simplified solvent-solute
+    model for RH-driven evaporation of aerosol particles in incompressible
+    framework, with optional mesh motion and topology changes. Tracks droplet
+    size reduction from initial to equilibrium diameter.
 \*---------------------------------------------------------------------------*/
 
 #include "fvCFD.H"
@@ -47,7 +48,7 @@ Description
 #include "pimpleControl.H"
 #include "OFstream.H"
 
-// Simplified Evaporation Model Function with Dynamic Density Update
+// **Simplified Evaporation Model Function with Dynamic Density Update**
 void updateDropletDiameter(
     Foam::KinematicParcel<Foam::particle>& particle,
     Foam::scalar deltaTime,
@@ -57,7 +58,7 @@ void updateDropletDiameter(
     const Foam::IOdictionary& kinematicCloudProperties
 )
 {
-    // Here, it reads composition and densities from kinematicCloudProperties
+    // Read composition and densities from kinematicCloudProperties
     const scalar phi_solute_initial = kinematicCloudProperties.subDict("evaporationProperties").get<scalar>("phiSoluteInitial");
     const scalar phi_salts = kinematicCloudProperties.subDict("evaporationProperties").get<scalar>("phiSalts");
     const scalar phi_proteins = kinematicCloudProperties.subDict("evaporationProperties").get<scalar>("phiProteins");
@@ -82,12 +83,36 @@ void updateDropletDiameter(
     }
 
     // Calculate initial droplet density (mass-weighted)
-    scalar densityDroplet = phi_water * densityWater + phi_salts * densitySalts + phi_proteins * densityProteins;
+    //scalar densityDroplet = phi_water * densityWater + phi_salts * densitySalts + phi_proteins * densityProteins;
 
     // Calculate initial mass and solute volumes
-    scalar initialMass = (M_PI / 6.0) * Foam::pow3(initialD) * densityDroplet;
-    scalar soluteVolume = (phi_salts * initialMass / densitySalts) + (phi_proteins * initialMass / densityProteins);
-    scalar D_dry = Foam::cbrt(6.0 * soluteVolume / M_PI);
+    //scalar initialMass = (M_PI / 6.0) * Foam::pow3(initialD) * densityDroplet;
+   // scalar soluteVolume = (phi_salts * initialMass / densitySalts) + (phi_proteins * initialMass / densityProteins);
+    
+    //to simplify
+    //scalar V_droplet = (M_PI / 6.0) * Foam::pow3(initialD);
+    //scalar soluteVolume = phi_solute_initial * V_droplet;
+    //scalar D_dry = Foam::cbrt(6.0 * soluteVolume / M_PI);
+
+   //  Wet droplet density (unchanged)
+      scalar densityDroplet = phi_water * densityWater + phi_salts * densitySalts + phi_proteins * densityProteins;
+
+   //  Volume and mass
+      scalar V_droplet = (M_PI/6.0) * pow3(initialD);
+      scalar m_droplet = densityDroplet * V_droplet;
+
+   //  Mass fractions
+      scalar phi_salts_m = phi_salts * densitySalts / densityDroplet;
+      scalar phi_prot_m = phi_proteins * densityProteins / densityDroplet;
+
+   //  Solute mass & volume
+      scalar m_salts  = phi_salts_m  * m_droplet;
+      scalar m_prot   = phi_prot_m   * m_droplet;
+
+      scalar soluteVolume = m_salts / densitySalts + m_prot / densityProteins;
+ 
+   //  Dry diameter
+      scalar D_dry = Foam::cbrt(6.0 * soluteVolume / M_PI);
 
     // Calculate equilibrium diameter
     scalar growthFactor = Foam::pow(1.0 + kappa * RH / (1.0 - RH), 1.0/3.0);
@@ -114,7 +139,8 @@ int main(int argc, char *argv[])
 {
     argList::addNote
     (
-        "Transient solver for buoyant, turbulent flow with simplified solvent-solute model for RH-driven evaporation of aerosol particles."
+        "Transient solver for buoyant, turbulent flow with simplified solvent-solute "
+        "model for RH-driven evaporation of aerosol particles."
     );
 
     #define CREATE_MESH createMeshesPostProcess.H
@@ -134,7 +160,7 @@ int main(int argc, char *argv[])
 
     turbulence->validate();
 
-    // Read Kinematic Cloud Properties
+    // **Read Kinematic Cloud Properties**
     IOdictionary kinematicCloudProperties
     (
         IOobject
@@ -147,10 +173,10 @@ int main(int argc, char *argv[])
         )
     );
 
-    // Read Initial Diameters for Models
+    // **Read Initial Diameters for Models**
     HashTable<dimensionedScalar> initialDiameters;
     const dictionary& injectionModels = kinematicCloudProperties.subDict("subModels").subDict("injectionModels");
-    wordList modelNames = {"model03_1"};  // Default to a single model, since the solver investigates a single aerosol droplet.
+    wordList modelNames = {"model03_1"};  // Default to single model
     forAll(modelNames, i)
     {
         const word& modelName = modelNames[i];
@@ -228,7 +254,7 @@ int main(int argc, char *argv[])
 
             parcels.evolve();
 
-	    if (parcels.nParcels() > parcelInitialDiameters.size())
+            if (parcels.nParcels() > parcelInitialDiameters.size())
             {
                 parcelInitialDiameters.setSize(parcels.nParcels(), 0.0);
                 label parcelIndex = 0;
@@ -260,7 +286,7 @@ int main(int argc, char *argv[])
             
          if (Pstream::master() && runTime.value() >= nextWriteTime)
             {
-                // Initial diameter logging per parcel
+                // ✅ NEW: Added initial diameter logging per parcel
                 label i = 0;
                 for (auto& p : parcels)
                 {
