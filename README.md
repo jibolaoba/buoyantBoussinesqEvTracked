@@ -19,14 +19,14 @@ This project is built on OpenFOAM (Open Field Operation and Manipulation), an op
 
 ## Dependencies
 
-- **OpenFOAM**: Version 8 or later (tested on v2112 and v2206). Install from [official sources](https://openfoam.org/download/).
+- **OpenFOAM**: v2406 or later. Install from [official sources](https://openfoam.org/download/).
 - **Compiler**: GCC 7+ or compatible (included in OpenFOAM installation).
 - **Optional Libraries**:
   - Swak4Foam or funkySetFields for advanced field manipulations.
   - MPI for parallel runs (e.g., OpenMPI).
 - No additional external libraries are required beyond standard OpenFOAM.
 
-Ensure your environment is set up with OpenFOAM sourced (e.g., `source /opt/openfoam8/etc/bashrc`).
+Ensure your environment is set up with OpenFOAM sourced (e.g., `source /opt/openfoamv2406/etc/bashrc`).
 
 ## Installation
 
