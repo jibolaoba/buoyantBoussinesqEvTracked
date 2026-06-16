@@ -14,4 +14,3 @@ The solver integrates the Boussinesq approximation for buoyancy (treating densit
 - **Heat Transfer**: Coupled energy equation solving for temperature fields influencing buoyancy and evaporation.
 - **Customizable**: Easily extendable for specific boundary conditions, turbulence models (e.g., k-epsilon, LES), or additional physics.
 - **Parallel Computing**: Compatible with OpenFOAM's parallel processing for large-scale simulations.
-- **Post-Processing**: Integrated with ParaView or OpenFOAM utilities for visualization and analysis.
